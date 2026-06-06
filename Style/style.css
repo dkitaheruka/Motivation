@@ -364,6 +364,43 @@ h1, h2, h3 {
   color: #777;
 }
 
+/* Fun mode: button, confetti and playful animations */
+.funny-btn {
+  background: linear-gradient(90deg,#ffb347,#ffcc33);
+  border: none;
+  padding: 10px 14px;
+  border-radius: 999px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.funny-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+.funny-btn { margin-left: 20px; }
+
+#confetti-container { position: fixed; top: 0; left: 0; width: 100%; height: 0; pointer-events: none; overflow: visible; z-index: 2000; }
+.confetti {
+  position: absolute;
+  top: -10vh;
+  width: 10px;
+  height: 14px;
+  opacity: 0.95;
+  border-radius: 3px;
+  transform-origin: center;
+  animation: confettiFall 3.8s cubic-bezier(.2,.7,.3,1) forwards;
+}
+
+@keyframes confettiFall {
+  to { transform: translateY(110vh) rotate(720deg); opacity: 1; }
+}
+
+.fun-mode .hero-title { animation: floaty 3s ease-in-out infinite; }
+@keyframes floaty { 0%{transform:translateY(0)}50%{transform:translateY(-10px) rotate(-1deg)}100%{transform:translateY(0)} }
+
+/* small playful accent for logo in fun mode */
+.fun-mode .logo { transform: rotate(-4deg); transition: transform .4s ease; }
+
+
 /* Responsive */
 @media (max-width: 992px) {
   .intro-grid, .message-grid, .contact-wrapper {
@@ -428,3 +465,43 @@ h1, h2, h3 {
     margin: 25px 0;
   }
 }
+
+/* 3D scene + FAB styles */
+.scene {
+  transform-style: preserve-3d;
+  transition: transform 0.5s cubic-bezier(.2,.8,.2,1);
+  will-change: transform;
+}
+
+.three-d .scene { /* subtle perspective handled via inline transform from JS */ }
+
+.fab-container {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  display: flex;
+  gap: 12px;
+  z-index: 2200;
+  align-items: center;
+}
+
+.threeD-btn {
+  background: #222;
+  color: #fff;
+  border: none;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.2);
+}
+.threeD-btn.active { background: linear-gradient(90deg,#00c6ff,#0072ff); }
+
+/* Add depth layers for some sections so they pop in 3D mode */
+.three-d .hero { transform: translateZ(30px); }
+.three-d .intro-image img { transform: translateZ(20px) scale(1.02); transition: transform .35s ease; }
+.three-d .message-card { transform: translateZ(12px); }
+.three-d .stat-item { transform: translateZ(8px); }
+
+/* Reduce confetti z-fighting */
+.confetti { backface-visibility: hidden; }

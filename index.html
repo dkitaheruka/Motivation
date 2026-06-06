@@ -37,8 +37,16 @@
       <a href="#about" class="cta-button">Start Your Journey</a>
     </div>
   </header>
+  <div id="confetti-container" aria-hidden="true"></div>
 
-  <main>
+  <!-- Floating action buttons: Funny + 3D -->
+  <div class="fab-container" aria-hidden="false">
+    <button id="funny-btn" class="funny-btn">Make it Funny 🤪</button>
+    <button id="threeD-btn" class="threeD-btn" title="Toggle 3D">3D</button>
+  </div>
+
+  <div class="scene">
+    <main>
     <section id="about" class="intro-section container">
       <div class="intro-grid">
         <div class="intro-text">
@@ -160,7 +168,8 @@
         </div>
       </div>
     </section>
-  </main>
+    </main>
+  </div>
 
   <footer class="main-footer">
     <div class="container">
@@ -186,6 +195,85 @@
       hamburger.classList.remove("active");
       navMenu.classList.remove("active");
     }));
+
+    // Confetti + Fun mode and 3D scene
+    const funnyBtn = document.getElementById('funny-btn');
+    const confettiContainer = document.getElementById('confetti-container');
+    const threeDBtn = document.getElementById('threeD-btn');
+    const scene = document.querySelector('.scene');
+    let funnyOn = false;
+    let threeDOn = false;
+    let rafId = null;
+
+    function createConfetti() {
+      const count = 80;
+      for (let i = 0; i < count; i++) {
+        const el = document.createElement('div');
+        el.className = 'confetti';
+        el.style.left = Math.random() * 100 + '%';
+        el.style.background = `hsl(${Math.random() * 360},85%,60%)`;
+        el.style.transform = `translateY(-10vh) rotate(${Math.random() * 360}deg)`;
+        el.style.animationDelay = (Math.random() * 0.6) + 's';
+        confettiContainer.appendChild(el);
+        setTimeout(() => el.remove(), 4200);
+      }
+    }
+
+    funnyBtn.addEventListener('click', () => {
+      funnyOn = !funnyOn;
+      const logo = document.querySelector('.logo');
+      const heroTitle = document.querySelector('.hero-title');
+      const heroSubtitle = document.querySelector('.hero-subtitle');
+
+      if (funnyOn) {
+        logo.textContent = 'FOCUS 🤡';
+        heroTitle.textContent = 'YOU GOT THIS — BUT ALSO, HAVE FUN!';
+        heroSubtitle.textContent = 'Serious growth, silly moments.';
+        funnyBtn.textContent = 'Make it Serious 😌';
+        document.body.classList.add('fun-mode');
+        createConfetti();
+      } else {
+        logo.textContent = 'FOCUS';
+        heroTitle.textContent = "IF YOU QUIT, YOU WON'T GET WHAT YOU WANT";
+        heroSubtitle.textContent = "Wake up from your misery; it's time to rise and climb.";
+        funnyBtn.textContent = 'Make it Funny 🤪';
+        document.body.classList.remove('fun-mode');
+      }
+    });
+
+    // 3D parallax: rotate the .scene slightly based on cursor position
+    const state = {x: 0, y: 0};
+
+    function onPointerMove(e) {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      const x = (e.clientX - w / 2) / (w / 2); // -1 to 1
+      const y = (e.clientY - h / 2) / (h / 2); // -1 to 1
+      state.x = x;
+      state.y = y;
+      if (!rafId) rafId = requestAnimationFrame(renderScene);
+    }
+
+    function renderScene() {
+      rafId = null;
+      const rx = state.y * 6; // rotateX
+      const ry = state.x * -8; // rotateY
+      scene.style.transform = `perspective(1200px) rotateX(${rx}deg) rotateY(${ry}deg)`;
+    }
+
+    threeDBtn.addEventListener('click', () => {
+      threeDOn = !threeDOn;
+      if (threeDOn) {
+        document.body.classList.add('three-d');
+        threeDBtn.classList.add('active');
+        window.addEventListener('pointermove', onPointerMove);
+      } else {
+        document.body.classList.remove('three-d');
+        threeDBtn.classList.remove('active');
+        window.removeEventListener('pointermove', onPointerMove);
+        scene.style.transform = '';
+      }
+    });
   </script>
 </body>
 
